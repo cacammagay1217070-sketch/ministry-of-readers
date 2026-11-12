@@ -1,1 +1,217 @@
-x
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Ministry of Readers{% endblock %} | St. John the Baptist Parish Church</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        burgundy: {
+                            50: '#fdf2f4',
+                            100: '#fce7eb',
+                            200: '#f9d0d9',
+                            300: '#f4a9b8',
+                            400: '#ec7690',
+                            500: '#dc4a6a',
+                            600: '#c42d55',
+                            700: '#a51f45',
+                            800: '#8a1c3d',
+                            900: '#761b38',
+                            950: '#420a1b',
+                        },
+                        gold: {
+                            400: '#e3c565',
+                            500: '#d4af37',
+                            600: '#b8942a',
+                        },
+                        cream: {
+                            50: '#fefdf8',
+                            100: '#fdf9ef',
+                            200: '#faf3dc',
+                        }
+                    },
+                    fontFamily: {
+                        serif: ['Cormorant Garamond', 'Georgia', 'serif'],
+                        sans: ['Source Sans 3', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Source Sans 3', system-ui, sans-serif; }
+        h1, h2, h3, .font-serif { font-family: 'Cormorant Garamond', Georgia, serif; }
+        .status-attended { @apply bg-green-100 text-green-800 border-green-300; }
+        .status-absent { @apply bg-red-100 text-red-800 border-red-300; }
+        .status-swapped { @apply bg-blue-100 text-blue-800 border-blue-300; }
+        .status-substituted { @apply bg-purple-100 text-purple-800 border-purple-300; }
+        .status-pending { @apply bg-amber-100 text-amber-800 border-amber-300; }
+        .card-hover { transition: transform 0.15s ease, box-shadow 0.15s ease; }
+        .card-hover:hover { transform: translateY(-2px); box-shadow: 0 10px 25px -5px rgb(0 0 0 / 0.1); }
+        .nav-link { @apply px-3 py-2 rounded-md text-sm font-medium transition-colors; }
+        .nav-link:hover { @apply bg-burgundy-800 text-white; }
+        .nav-link.active { @apply bg-burgundy-800 text-gold-400; }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="bg-cream-50 text-gray-800 min-h-screen flex flex-col">
+    <!-- Top Bar -->
+    <div class="bg-burgundy-950 text-cream-100 text-xs py-1.5 px-4">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <span class="flex items-center gap-2">
+                <i class="fas fa-church text-gold-500"></i>
+                St. John the Baptist Parish Church
+            </span>
+            {% if current_user.is_authenticated %}
+            <span class="flex items-center gap-4">
+                <a href="{{ url_for('notifications') }}" class="hover:text-gold-400 relative">
+                    <i class="fas fa-bell"></i>
+                    {% set unread = current_user.notifications.filter_by(is_read=False).count() %}
+                    {% if unread > 0 %}
+                    <span class="absolute -top-1 -right-2 bg-red-500 text-white text-[10px] rounded-full h-4 w-4 flex items-center justify-center">{{ unread }}</span>
+                    {% endif %}
+                </a>
+                <span class="hidden sm:inline">{{ current_user.full_name }}</span>
+                <a href="{{ url_for('logout') }}" class="hover:text-gold-400"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </span>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Main Navigation -->
+    <nav class="bg-burgundy-900 text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-3">
+                    <a href="{{ url_for('dashboard') }}" class="flex items-center gap-2">
+                        <div class="w-10 h-10 rounded-full bg-gold-500 flex items-center justify-center text-burgundy-950 font-bold font-serif text-lg shadow">
+                            MR
+                        </div>
+                        <div class="hidden md:block">
+                            <div class="font-serif font-semibold text-lg leading-tight tracking-wide">Ministry of Readers</div>
+                            <div class="text-[10px] text-burgundy-200 uppercase tracking-wider">St. John the Baptist Parish</div>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- Desktop Menu -->
+                <div class="hidden lg:flex items-center space-x-1">
+                    <a href="{{ url_for('dashboard') }}" class="nav-link {% if request.endpoint == 'dashboard' %}active{% endif %}">
+                        <i class="fas fa-home mr-1"></i> Dashboard
+                    </a>
+                    <a href="{{ url_for('schedules') }}" class="nav-link {% if 'schedule' in request.endpoint %}active{% endif %}">
+                        <i class="fas fa-calendar-alt mr-1"></i> Schedules
+                    </a>
+                    <a href="{{ url_for('readings') }}" class="nav-link {% if 'reading' in request.endpoint %}active{% endif %}">
+                        <i class="fas fa-book-open mr-1"></i> Daily Readings
+                    </a>
+                    <a href="{{ url_for('announcements') }}" class="nav-link {% if 'announcement' in request.endpoint %}active{% endif %}">
+                        <i class="fas fa-bullhorn mr-1"></i> Announcements
+                    </a>
+                    <a href="{{ url_for('guides') }}" class="nav-link {% if 'guide' in request.endpoint %}active{% endif %}">
+                        <i class="fas fa-scroll mr-1"></i> Commentators' Guide
+                    </a>
+                    <a href="{{ url_for('funeral_guides') }}" class="nav-link {% if request.endpoint == 'funeral_guides' %}active{% endif %}">
+                        <i class="fas fa-cross mr-1"></i> Funeral Mass
+                    </a>
+                    <a href="{{ url_for('attendance_history') }}" class="nav-link {% if 'attendance' in request.endpoint %}active{% endif %}">
+                        <i class="fas fa-clipboard-check mr-1"></i> Attendance
+                    </a>
+                    {% if current_user.is_authenticated and current_user.is_admin() %}
+                    <a href="{{ url_for('admin_dashboard') }}" class="nav-link {% if 'admin' in request.endpoint %}active{% endif %} bg-gold-600 text-burgundy-950 hover:bg-gold-500">
+                        <i class="fas fa-cog mr-1"></i> Admin
+                    </a>
+                    {% endif %}
+                </div>
+
+                <!-- Mobile menu button -->
+                <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-md hover:bg-burgundy-800">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden lg:hidden bg-burgundy-950 border-t border-burgundy-800">
+            <div class="px-3 py-3 space-y-1">
+                <a href="{{ url_for('dashboard') }}" class="block nav-link">Dashboard</a>
+                <a href="{{ url_for('schedules') }}" class="block nav-link">Schedules</a>
+                <a href="{{ url_for('readings') }}" class="block nav-link">Daily Readings</a>
+                <a href="{{ url_for('announcements') }}" class="block nav-link">Announcements</a>
+                <a href="{{ url_for('guides') }}" class="block nav-link">Commentators' Guide</a>
+                <a href="{{ url_for('funeral_guides') }}" class="block nav-link">Funeral Mass</a>
+                <a href="{{ url_for('attendance_history') }}" class="block nav-link">Attendance</a>
+                <a href="{{ url_for('my_assignments') }}" class="block nav-link">My Assignments</a>
+                {% if current_user.is_authenticated and current_user.is_admin() %}
+                <a href="{{ url_for('admin_dashboard') }}" class="block nav-link bg-gold-600 text-burgundy-950">Admin Panel</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="max-w-7xl mx-auto px-4 mt-4 space-y-2">
+        {% for category, message in messages %}
+        <div class="rounded-lg px-4 py-3 text-sm flex items-center justify-between
+            {% if category == 'success' %}bg-green-50 text-green-800 border border-green-200
+            {% elif category == 'danger' %}bg-red-50 text-red-800 border border-red-200
+            {% elif category == 'warning' %}bg-amber-50 text-amber-800 border border-amber-200
+            {% else %}bg-blue-50 text-blue-800 border border-blue-200{% endif %}">
+            <span>{{ message }}</span>
+            <button onclick="this.parentElement.remove()" class="ml-4 opacity-60 hover:opacity-100">&times;</button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <!-- Main Content -->
+    <main class="flex-grow">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-burgundy-950 text-burgundy-200 mt-12">
+        <div class="max-w-7xl mx-auto px-4 py-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="font-serif text-gold-500 text-lg mb-3">Ministry of Readers</h3>
+                    <p class="text-sm leading-relaxed">Official digital platform for the lectors and commentators of St. John the Baptist Parish Church. Serving the liturgy with faith and excellence.</p>
+                </div>
+                <div>
+                    <h3 class="font-serif text-gold-500 text-lg mb-3">Quick Links</h3>
+                    <ul class="text-sm space-y-1">
+                        <li><a href="{{ url_for('schedules') }}" class="hover:text-white">Serving Schedules</a></li>
+                        <li><a href="{{ url_for('readings') }}" class="hover:text-white">Daily Readings</a></li>
+                        <li><a href="{{ url_for('guides') }}" class="hover:text-white">Commentators' Guides</a></li>
+                        <li><a href="{{ url_for('funeral_guides') }}" class="hover:text-white">Funeral Mass Guide</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-serif text-gold-500 text-lg mb-3">Contact</h3>
+                    <p class="text-sm">For schedule concerns or ministry matters, please contact the Ministry President or officers.</p>
+                    <p class="text-xs mt-3 text-burgundy-400">Sample data is for demonstration. Official content managed by administrators.</p>
+                </div>
+            </div>
+            <div class="border-t border-burgundy-800 mt-6 pt-4 text-center text-xs text-burgundy-400">
+                &copy; {{ now().year if now is defined else 2026 }} Ministry of Readers – St. John the Baptist Parish Church. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('mobile-menu-btn')?.addEventListener('click', () => {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        });
+    </script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Funeral Mass Guide{% endblock %}
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 py-8">
+    <h1 class="font-serif text-3xl text-burgundy-900 mb-2">Funeral Mass Guide</h1>
+    <p class="text-gray-600 text-sm mb-6">Commentaries and scripts for Funeral Mass celebrations, organized in liturgical sequence.</p>
+    <div class="space-y-4">
+        {% for g in guides %}
+        <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
+            <div class="flex items-start gap-3">
+                <div class="w-8 h-8 rounded-full bg-burgundy-100 text-burgundy-800 flex items-center justify-center text-sm font-bold shrink-0">{{ loop.index }}</div>
+                <div class="flex-grow">
+                    <h2 class="font-serif text-lg text-burgundy-900">{{ g.title }}</h2>
+                    {% if g.section %}<div class="text-xs text-gold-600 uppercase mt-0.5">{{ g.section }}</div>{% endif %}
+                    {% if g.content %}<div class="text-sm text-gray-700 mt-2 whitespace-pre-line">{{ g.content }}</div>{% endif %}
+                    {% if g.file_path %}
+                    <a href="{{ url_for('static', filename=g.file_path) }}" class="inline-block mt-2 text-sm text-burgundy-700 hover:underline"><i class="fas fa-file-download mr-1"></i> Download</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <p class="text-gray-500 text-center py-10">No Funeral Mass guides uploaded yet.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Ministry of Readers</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        burgundy: { 800: '#8a1c3d', 900: '#761b38', 950: '#420a1b' },
+                        gold: { 400: '#e3c565', 500: '#d4af37' },
+                        cream: { 50: '#fefdf8', 100: '#fdf9ef' }
+                    },
+                    fontFamily: {
+                        serif: ['Cormorant Garamond', 'serif'],
+                        sans: ['Source Sans 3', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-burgundy-950 via-burgundy-900 to-burgundy-800 flex items-center justify-center p-4 font-sans">
+    <div class="w-full max-w-md">
+        <div class="text-center mb-8">
+            <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gold-500 text-burgundy-950 text-3xl font-serif font-bold shadow-lg mb-4">
+                MR
+            </div>
+            <h1 class="font-serif text-3xl text-white tracking-wide">Ministry of Readers</h1>
+            <p class="text-burgundy-200 text-sm mt-1">St. John the Baptist Parish Church</p>
+        </div>
+
+        <div class="bg-cream-50 rounded-2xl shadow-2xl p-8">
+            <h2 class="font-serif text-2xl text-burgundy-900 text-center mb-6">Sign In</h2>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+            <div class="mb-4 rounded-lg px-4 py-3 text-sm
+                {% if category == 'danger' %}bg-red-50 text-red-700 border border-red-200
+                {% else %}bg-blue-50 text-blue-700 border border-blue-200{% endif %}">
+                {{ message }}
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+
+            <form method="POST" action="{{ url_for('login') }}" class="space-y-5">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Username</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400"><i class="fas fa-user"></i></span>
+                        <input type="text" name="username" required autofocus
+                               class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-burgundy-800 focus:border-burgundy-800 outline-none transition"
+                               placeholder="Enter your username">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400"><i class="fas fa-lock"></i></span>
+                        <input type="password" name="password" required
+                               class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-burgundy-800 focus:border-burgundy-800 outline-none transition"
+                               placeholder="Enter your password">
+                    </div>
+                </div>
+                <button type="submit"
+                        class="w-full bg-burgundy-900 hover:bg-burgundy-800 text-white font-medium py-2.5 rounded-lg transition shadow-md hover:shadow-lg">
+                    Sign In
+                </button>
+            </form>
+
+            <div class="mt-6 pt-5 border-t border-gray-200 text-center text-xs text-gray-500">
+                <p class="font-medium text-gray-600 mb-1">Demo Accounts</p>
+                <p>Admin: <code class="bg-gray-100 px-1 rounded">admin</code> / <code class="bg-gray-100 px-1 rounded">admin123</code></p>
+                <p class="mt-1">Member: <code class="bg-gray-100 px-1 rounded">maria.santos</code> / <code class="bg-gray-100 px-1 rounded">reader123</code></p>
+            </div>
+        </div>
+
+        <p class="text-center text-burgundy-300 text-xs mt-6">
+            Authorized ministry members only
+        </p>
+    </div>
+</body>
+</html>
