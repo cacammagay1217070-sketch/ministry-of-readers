@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}New Announcement{% endblock %}
+{% block content %}
+<div class="max-w-2xl mx-auto px-4 py-8">
+    <h1 class="font-serif text-2xl text-burgundy-900 mb-6">Publish Announcement</h1>
+    <form method="POST" enctype="multipart/form-data" class="bg-white rounded-xl border shadow-sm p-6 space-y-4">
+        <div><label class="block text-sm font-medium mb-1">Title *</label><input type="text" name="title" required class="w-full border rounded-lg px-3 py-2 text-sm"></div>
+        <div><label class="block text-sm font-medium mb-1">Content *</label><textarea name="content" required rows="5" class="w-full border rounded-lg px-3 py-2 text-sm"></textarea></div>
+        <div><label class="block text-sm font-medium mb-1">Priority</label>
+            <select name="priority" class="w-full border rounded-lg px-3 py-2 text-sm">
+                <option value="normal">Normal</option>
+                <option value="important">Important</option>
+                <option value="urgent">Urgent</option>
+            </select>
+        </div>
+        <div><label class="block text-sm font-medium mb-1">Image (optional)</label><input type="file" name="image" accept="image/*" class="text-sm"></div>
+        <button type="submit" class="bg-burgundy-900 text-white px-5 py-2.5 rounded-lg text-sm font-medium">Publish</button>
+    </form>
+</div>
+{% endblock %}

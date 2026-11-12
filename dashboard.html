@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 py-8">
+    <h1 class="font-serif text-3xl text-burgundy-900 mb-6">Administrator Dashboard</h1>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div class="bg-white rounded-xl p-5 border shadow-sm"><div class="text-3xl font-serif text-burgundy-800">{{ total_members }}</div><div class="text-sm text-gray-500">Members</div></div>
+        <div class="bg-white rounded-xl p-5 border shadow-sm"><div class="text-3xl font-serif text-burgundy-800">{{ upcoming }}</div><div class="text-sm text-gray-500">Upcoming Masses</div></div>
+        <div class="bg-white rounded-xl p-5 border shadow-sm"><div class="text-3xl font-serif text-amber-600">{{ pending }}</div><div class="text-sm text-gray-500">Pending Attendance</div></div>
+        <div class="bg-white rounded-xl p-5 border shadow-sm"><div class="text-3xl font-serif text-green-700">{{ summary.attended }}</div><div class="text-sm text-gray-500">Attended (30d)</div></div>
+    </div>
+
+    <div class="grid lg:grid-cols-2 gap-6">
+        <div class="bg-white rounded-xl border shadow-sm p-5">
+            <h2 class="font-serif text-lg text-burgundy-900 mb-3">Quick Actions</h2>
+            <div class="grid grid-cols-2 gap-2">
+                <a href="{{ url_for('admin_new_schedule') }}" class="p-3 rounded-lg bg-burgundy-50 hover:bg-burgundy-100 text-sm font-medium text-burgundy-900 text-center">+ New Schedule</a>
+                <a href="{{ url_for('admin_new_reading') }}" class="p-3 rounded-lg bg-burgundy-50 hover:bg-burgundy-100 text-sm font-medium text-burgundy-900 text-center">+ Upload Reading</a>
+                <a href="{{ url_for('admin_new_announcement') }}" class="p-3 rounded-lg bg-burgundy-50 hover:bg-burgundy-100 text-sm font-medium text-burgundy-900 text-center">+ Announcement</a>
+                <a href="{{ url_for('admin_new_guide') }}" class="p-3 rounded-lg bg-burgundy-50 hover:bg-burgundy-100 text-sm font-medium text-burgundy-900 text-center">+ Guide</a>
+                <a href="{{ url_for('admin_members') }}" class="p-3 rounded-lg bg-burgundy-50 hover:bg-burgundy-100 text-sm font-medium text-burgundy-900 text-center">Manage Members</a>
+                <a href="{{ url_for('attendance_history') }}" class="p-3 rounded-lg bg-burgundy-50 hover:bg-burgundy-100 text-sm font-medium text-burgundy-900 text-center">Attendance</a>
+            </div>
+        </div>
+        <div class="bg-white rounded-xl border shadow-sm p-5">
+            <h2 class="font-serif text-lg text-burgundy-900 mb-3">Attendance Summary (30 days)</h2>
+            <ul class="text-sm space-y-1">
+                <li class="flex justify-between"><span>Total scheduled</span><span class="font-medium">{{ summary.total }}</span></li>
+                <li class="flex justify-between"><span>Attended</span><span class="font-medium text-green-700">{{ summary.attended }}</span></li>
+                <li class="flex justify-between"><span>Absent</span><span class="font-medium text-red-700">{{ summary.absent }}</span></li>
+                <li class="flex justify-between"><span>Substituted</span><span class="font-medium text-purple-700">{{ summary.substituted }}</span></li>
+                <li class="flex justify-between"><span>Swapped</span><span class="font-medium text-blue-700">{{ summary.swapped }}</span></li>
+                <li class="flex justify-between"><span>Pending</span><span class="font-medium text-amber-700">{{ summary.pending }}</span></li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

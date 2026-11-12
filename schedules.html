@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% block title %}Schedules{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 py-8">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <div>
+            <h1 class="font-serif text-3xl text-burgundy-900">Serving Schedules</h1>
+            <p class="text-gray-600 text-sm mt-1">Official ministry assignments for Masses and liturgical celebrations</p>
+        </div>
+        {% if current_user.is_admin() %}
+        <a href="{{ url_for('admin_new_schedule') }}" class="inline-flex items-center gap-2 bg-burgundy-900 text-white px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-burgundy-800 transition shadow">
+            <i class="fas fa-plus"></i> New Schedule
+        </a>
+        {% endif %}
+    </div>
+
+    <!-- View Tabs -->
+    <div class="flex gap-2 mb-6 border-b border-gray-200 pb-2">
+        <a href="{{ url_for('schedules', view='list') }}" class="px-4 py-2 rounded-t-lg text-sm font-medium {% if view == 'list' %}bg-burgundy-900 text-white{% else %}text-gray-600 hover:bg-gray-100{% endif %}">
+            List View
+        </a>
+        <a href="{{ url_for('schedules', view='month', month=month, year=year) }}" class="px-4 py-2 rounded-t-lg text-sm font-medium {% if view == 'month' %}bg-burgundy-900 text-white{% else %}text-gray-600 hover:bg-gray-100{% endif %}">
+            Monthly
+        </a>
+    </div>
+
+    {% if view == 'month' %}
+    <div class="flex items-center justify-between mb-4">
+        <a href="{{ url_for('schedules', view='month', month=month-1 if month > 1 else 12, year=year if month > 1 else year-1) }}" class="p-2 rounded hover:bg-gray-100"><i class="fas fa-chevron-left"></i></a>
+        <h2 class="font-serif text-xl text-burgundy-900">
+            {{ date(year, month, 1).strftime('%B %Y') if false else '' }}
+            {% set months = ['', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'] %}
+            {{ months[month] }} {{ year }}
+        </h2>
+        <a href="{{ url_for('schedules', view='month', month=month+1 if month < 12 else 1, year=year if month < 12 else year+1) }}" class="p-2 rounded hover:bg-gray-100"><i class="fas fa-chevron-right"></i></a>
+    </div>
+    {% endif %}
+
+    <div class="bg-white rounded-xl shadow border border-gray-100 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead class="bg-burgundy-50 text-left">
+                    <tr>
+                        <th class="px-5 py-3 font-medium text-burgundy-900">Date</th>
+                        <th class="px-5 py-3 font-medium text-burgundy-900">Time</th>
+                        <th class="px-5 py-3 font-medium text-burgundy-900">Mass Type</th>
+                        <th class="px-5 py-3 font-medium text-burgundy-900">Language</th>
+                        <th class="px-5 py-3 font-medium text-burgundy-900">Assigned Roles</th>
+                        <th class="px-5 py-3 font-medium text-burgundy-900"></th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    {% for s in schedules %}
+                    <tr class="hover:bg-cream-50">
+                        <td class="px-5 py-3 font-medium">{{ s.mass_date.strftime('%a, %b %d, %Y') }}</td>
+                        <td class="px-5 py-3">{{ s.mass_time }}</td>
+                        <td class="px-5 py-3">{{ s.mass_type }}</td>
+                        <td class="px-5 py-3">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium
+                                {% if s.language == 'Pangasinan' %}bg-amber-100 text-amber-800{% else %}bg-blue-100 text-blue-800{% endif %}">
+                                {{ s.language }}
+                            </span>
+                        </td>
+                        <td class="px-5 py-3">
+                            <div class="flex flex-wrap gap-1">
+                                {% for a in s.assignments %}
+                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs border status-{{ a.status }}" title="{{ a.original_user.full_name }}">
+                                    {{ a.role }}: {{ a.original_user.full_name.split()[0] }}
+                                </span>
+                                {% else %}
+                                <span class="text-gray-400 text-xs">No assignments</span>
+                                {% endfor %}
+                            </div>
+                        </td>
+                        <td class="px-5 py-3 text-right">
+                            <a href="{{ url_for('schedule_detail', id=s.id) }}" class="text-burgundy-700 hover:text-burgundy-900 font-medium text-xs">
+                                Details <i class="fas fa-arrow-right ml-1"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="6" class="px-5 py-10 text-center text-gray-500">
+                            No schedules found for this period.
+                            {% if current_user.is_admin() %}
+                            <div class="mt-2"><a href="{{ url_for('admin_new_schedule') }}" class="text-burgundy-700 underline">Create the first schedule</a></div>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Legend -->
+    <div class="mt-6 flex flex-wrap gap-3 text-xs">
+        <span class="font-medium text-gray-600">Status legend:</span>
+        <span class="px-2 py-0.5 rounded border status-pending">Pending</span>
+        <span class="px-2 py-0.5 rounded border status-attended">Attended</span>
+        <span class="px-2 py-0.5 rounded border status-absent">Absent</span>
+        <span class="px-2 py-0.5 rounded border status-swapped">Swapped</span>
+        <span class="px-2 py-0.5 rounded border status-substituted">Substituted</span>
+    </div>
+</div>
+{% endblock %}

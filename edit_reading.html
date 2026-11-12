@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Edit Reading{% endblock %}
+{% block content %}
+<div class="max-w-2xl mx-auto px-4 py-8">
+    <h1 class="font-serif text-2xl text-burgundy-900 mb-6">Edit Reading – {{ reading.reading_date.strftime('%B %d, %Y') }}</h1>
+    <form method="POST" class="bg-white rounded-xl border shadow-sm p-6 space-y-4">
+        <div><label class="block text-sm font-medium mb-1">Celebration</label><input type="text" name="celebration" value="{{ reading.celebration or '' }}" class="w-full border rounded-lg px-3 py-2 text-sm"></div>
+        <div><label class="block text-sm font-medium mb-1">Season</label><input type="text" name="liturgical_season" value="{{ reading.liturgical_season or '' }}" class="w-full border rounded-lg px-3 py-2 text-sm"></div>
+        <div><label class="block text-sm font-medium mb-1">First Reading Citation</label><input type="text" name="first_reading_citation" value="{{ reading.first_reading_citation or '' }}" class="w-full border rounded-lg px-3 py-2 text-sm"></div>
+        <div><label class="block text-sm font-medium mb-1">First Reading</label><textarea name="first_reading" rows="3" class="w-full border rounded-lg px-3 py-2 text-sm">{{ reading.first_reading or '' }}</textarea></div>
+        <div><label class="block text-sm font-medium mb-1">Psalm Citation</label><input type="text" name="psalm_citation" value="{{ reading.psalm_citation or '' }}" class="w-full border rounded-lg px-3 py-2 text-sm"></div>
+        <div><label class="block text-sm font-medium mb-1">Responsorial Psalm</label><textarea name="responsorial_psalm" rows="2" class="w-full border rounded-lg px-3 py-2 text-sm">{{ reading.responsorial_psalm or '' }}</textarea></div>
+        <div><label class="block text-sm font-medium mb-1">Second Reading Citation</label><input type="text" name="second_reading_citation" value="{{ reading.second_reading_citation or '' }}" class="w-full border rounded-lg px-3 py-2 text-sm"></div>
+        <div><label class="block text-sm font-medium mb-1">Second Reading</label><textarea name="second_reading" rows="3" class="w-full border rounded-lg px-3 py-2 text-sm">{{ reading.second_reading or '' }}</textarea></div>
+        <div><label class="block text-sm font-medium mb-1">Gospel Citation</label><input type="text" name="gospel_citation" value="{{ reading.gospel_citation or '' }}" class="w-full border rounded-lg px-3 py-2 text-sm"></div>
+        <div><label class="block text-sm font-medium mb-1">Gospel</label><textarea name="gospel" rows="4" class="w-full border rounded-lg px-3 py-2 text-sm">{{ reading.gospel or '' }}</textarea></div>
+        <div><label class="block text-sm font-medium mb-1">Notes</label><textarea name="notes" rows="2" class="w-full border rounded-lg px-3 py-2 text-sm">{{ reading.notes or '' }}</textarea></div>
+        <button type="submit" class="bg-burgundy-900 text-white px-5 py-2.5 rounded-lg text-sm font-medium">Save Changes</button>
+    </form>
+</div>
+{% endblock %}

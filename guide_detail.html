@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}{{ guide.title }}{% endblock %}
+{% block content %}
+<div class="max-w-3xl mx-auto px-4 py-8">
+    <a href="{{ url_for('guides', category=guide.category) }}" class="text-sm text-burgundy-700 hover:underline mb-4 inline-block"><i class="fas fa-arrow-left mr-1"></i> Back</a>
+    <article class="bg-white rounded-xl shadow border border-gray-100 overflow-hidden">
+        <header class="bg-burgundy-900 text-white px-6 py-4">
+            <div class="text-xs text-gold-400 uppercase">{{ guide.category }} · {{ guide.section or 'Guide' }}</div>
+            <h1 class="font-serif text-2xl mt-1">{{ guide.title }}</h1>
+        </header>
+        <div class="p-6 md:p-8">
+            {% if guide.content %}
+            <div class="text-gray-800 leading-relaxed whitespace-pre-line">{{ guide.content }}</div>
+            {% endif %}
+            {% if guide.file_path %}
+            <div class="mt-6">
+                <a href="{{ url_for('static', filename=guide.file_path) }}" target="_blank" class="inline-flex items-center gap-2 bg-burgundy-900 text-white px-4 py-2 rounded-lg text-sm hover:bg-burgundy-800">
+                    <i class="fas fa-download"></i> Download File
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </article>
+</div>
+{% endblock %}
